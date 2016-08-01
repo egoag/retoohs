@@ -126,6 +126,12 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
+
+# Crispy form
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+
 # SS Settings
 GB = 1024 * 1024 * 1024
 DEFAULT_TRAFFIC = 10 * GB
+START_PORT = 10000

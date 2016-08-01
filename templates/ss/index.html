@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+    <div class="card">
+        {% if user.is_authenticated %}
+            port: {{ user.ss_user.port }}
+            password: {{ user.ss_user.password }}
+            transfer: {{ user.ss_user.transfer_enable }}
+            upload_traffic: {{ user.ss_user.upload_traffic }}
+            download_traffic: {{ user.ss_user.download_traffic }}
+        {% endif %}
+    </div>
+{% endblock %}

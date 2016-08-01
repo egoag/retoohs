@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+    <div class="card">
+        {% for node in object_list %}
+            {{ node.name }}
+            {{ node.plan }}
+            {{ node.server }}
+            {{ node.info }}
+            {{ node.status }}
+        {% endfor %}
+    </div>
+{% endblock %}
