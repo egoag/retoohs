@@ -3,12 +3,14 @@
 
 {% block body %}
     <div class="card">
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and user.ss_user %}
             port: {{ user.ss_user.port }}
             password: {{ user.ss_user.password }}
             transfer: {{ user.ss_user.transfer_enable }}
             upload_traffic: {{ user.ss_user.upload_traffic }}
             download_traffic: {{ user.ss_user.download_traffic }}
+        {% else %}
+            <h4><a href="{% url 'ss:create' %}">Register ShadowSocks Account</a></h4>
         {% endif %}
     </div>
 {% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+    <h3>Invite Codes:</h3>
+    {% for invite_code in object_list %}
+        <li><a href="{% url 'ss:create' %}?code={{ invite_code.code }}">{{ invite_code.code }}</a></li>
+    {% endfor %}
+{% endblock %}

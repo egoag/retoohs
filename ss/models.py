@@ -1,7 +1,9 @@
+from random import choice
 from django.db import models
 from django.conf import settings
 from django.core import validators
 from django.dispatch import receiver
+from django.shortcuts import resolve_url
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.core.exceptions import ValidationError
@@ -13,9 +15,14 @@ PLAN_CHOICES = (
 )
 METHOD_CHOICES = (
     ('aes-256-cfb', 'aes-256-cfb'),
+    ('rc4-md5', 'rc4-md5'),
+    ('salsa20', 'salsa20'),
+    ('chacha20', 'chacha20'),
 )
 STATUS_CHOICES = (
-    ('ok', 'OK'),
+    ('ok', '好用'),
+    ('slow', '不好用'),
+    ('fail', '坏了'),
 )
 
 
@@ -79,11 +86,11 @@ class SSUser(models.Model):
     )
 
     def __str__(self):
-        return self.username
+        return self.user.username
 
     @classmethod
     def get_absolute_url(cls):
-        return
+        return resolve_url('ss:index')
 
     def clean(self):
         # limit: 1024 < port < 50000
@@ -91,9 +98,9 @@ class SSUser(models.Model):
             if not 1024 < self.port < 5000:
                 raise ValidationError('端口必须大于1024,小于50000')
         else:
-            max_port_user = SSUser.objects.order_by('port').first()
+            max_port_user = SSUser.objects.order_by('-port').first()
             if max_port_user:
-                self.port = max_port_user.port + 2 if max_port_user.port % 2 else 3
+                self.port = max_port_user.port + choice([2, 3])
             else:
                 self.port = settings.START_PORT
 

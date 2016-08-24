@@ -17,7 +17,10 @@ class SSUserForm(CrispyFormMixin, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
+        code = kwargs.pop('code', False)
         super(SSUserForm, self).__init__(*args, **kwargs)
+        if code:
+            self.fields['invite_code'].initial = code
 
     def save(self, commit=True):
         self.instance.user = self.user
