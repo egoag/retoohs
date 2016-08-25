@@ -84,6 +84,16 @@ class SSUser(models.Model):
             default=settings.DEFAULT_TRAFFIC,
             db_column='transfer_enable',
     )
+    switch = models.BooleanField(
+            'switch',
+            default=True,
+            db_column='switch'
+    )
+    enable = models.BooleanField(
+            '开启',
+            default=True,
+            db_column='enable'
+    )
 
     def __str__(self):
         return self.user.username
@@ -106,6 +116,7 @@ class SSUser(models.Model):
 
     class Meta:
         ordering = ('-last_check_in_time',)
+        db_table = 'user'
 
 
 class InviteCode(models.Model):
@@ -196,4 +207,5 @@ class Node(models.Model):
 @receiver(post_save, sender=SSUser)
 def remove_invite_code_after_use(instance, created, **kwargs):
     if created:
-        instance.invite_code.delete()
+        if instance.invite_code:
+            instance.invite_code.delete()

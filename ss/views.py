@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.views import generic
+from django.shortcuts import redirect
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin
 from ss.models import SSUser, InviteCode, Node
@@ -12,7 +13,7 @@ class SSUserCreate(LoginRequiredMixin, generic.CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         if hasattr(request.user, 'ss_user'):
-            raise PermissionDenied('已经注册过啦')
+            return redirect('ss:index')
         return super(SSUserCreate, self).dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
