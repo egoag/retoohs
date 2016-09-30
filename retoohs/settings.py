@@ -11,6 +11,26 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+from urllib.request import urljoin
+import retoohs.settings_local_sample as sample_config
+
+try:
+    import rtc_public_api.settings_local as config
+except ImportError:
+    config = {}
+
+
+def _(attr, tp=None):
+    value = os.environ.get(attr, getattr(config, attr, getattr(sample_config, attr, None)))
+    if isinstance(value, str):
+        if value.lower() == 'true':
+            return True
+        if value.lower() == 'false':
+            return False
+    if tp:
+        return tp(value)
+    return value
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,9 +42,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '#q)ccsgnk86hc(wkc^vut8x68n!9ob8+6&5xf8n44t8&@^qm*j'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = _('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -74,19 +94,25 @@ WSGI_APPLICATION = 'retoohs.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
-DATABASES = {
-    'develop': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    },
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'HOST': 'localhost',
-        'NAME': 'retoohs',
-        'USER': 'hank',
-        'PASSWORD': 'orange',
+if _('DB_TYPE') == 'sqlite':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        },
     }
-}
+elif _('DB_TYPE') == 'mysql':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'HOST': _('DB_HOST'),
+            'NAME': _('DB_NAME'),
+            'USER': _('DB_USER'),
+            'PASSWORD': _('DB_PASS'),
+        }
+    }
+else:
+    raise ValueError('Databases must be sqlite or mysql')
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
@@ -109,7 +135,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-Hans'
 
 TIME_ZONE = 'UTC'
 
@@ -123,6 +149,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = _('STATIC_ROOT')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
