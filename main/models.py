@@ -21,3 +21,6 @@ class User(AbstractUser):
 
     class Meta(AbstractUser.Meta):
         verbose_name = '用户'
+
+
+User._meta.get_field('username').max_length = 64
