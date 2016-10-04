@@ -1,7 +1,21 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model, authenticate
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit, Button, Row, Field
+
+
+class RegisterForm(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.add_input(Submit('submit', '确定', css_class="btn-primary", style="margin-left:18px; width: 98px"))
+        super(RegisterForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = get_user_model()
+        fields = ("username",)
+
 
 class LoginForm(forms.Form):
     """
@@ -39,9 +53,9 @@ class LoginForm(forms.Form):
         if self.fields['username'].label is None:
             self.fields['username'].label = self.username_field.verbose_name
 
-        self.helper.add_input(
-                Button('button', '找回密码', onclick='window.location.href="/password-reset"',
-                       style="margin-left:18px; width: 98px"))
+        # self.helper.add_input(
+        #     Button('button', '找回密码', onclick='window.location.href="/password-reset"',
+        #            style="margin-left:18px; width: 98px"))
 
     def clean(self):
         username = self.cleaned_data.get('username')
@@ -52,9 +66,9 @@ class LoginForm(forms.Form):
                                            password=password)
             if self.user_cache is None:
                 raise forms.ValidationError(
-                        self.error_messages['invalid_login'],
-                        code='invalid_login',
-                        params={'username': self.username_field.verbose_name},
+                    self.error_messages['invalid_login'],
+                    code='invalid_login',
+                    params={'username': self.username_field.verbose_name},
                 )
             else:
                 self.confirm_login_allowed(self.user_cache)
@@ -74,8 +88,8 @@ class LoginForm(forms.Form):
         """
         if not user.is_active:
             raise forms.ValidationError(
-                    self.error_messages['inactive'],
-                    code='inactive',
+                self.error_messages['inactive'],
+                code='inactive',
             )
 
     def get_user_id(self):

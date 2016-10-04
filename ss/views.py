@@ -1,10 +1,45 @@
+import random
+import datetime
 from django.views import generic
+from django.utils import timezone
 from django.shortcuts import redirect
+from django.views.generic import TemplateView
+from django.http.response import JsonResponse
+from django.core.urlresolvers import reverse_lazy
+from django.core.exceptions import PermissionDenied
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.admin.views.decorators import staff_member_required
 from ss.models import SSUser, InviteCode, Node
 from ss import forms
+
+
+class StaffMixin(object):
+    def dispatch(self, request, *args, **kwargs):
+        user = request.user
+        if not user.is_authenticated() or not user.is_staff:
+            raise PermissionDenied
+
+        return super(StaffMixin, self).dispatch(request, *args, **kwargs)
+
+
+class SSLoginRequiredMixin(LoginRequiredMixin):
+    login_url = reverse_lazy('ss:create')
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated() or not getattr(request.user, 'ss_user', None):
+            return self.handle_no_permission()
+        return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
+
+
+class Index(SSLoginRequiredMixin, TemplateView):
+    template_name = 'ss/index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(Index, self).get_context_data(**kwargs)
+        context.update({'page_msg': 'User Center', 'page_header': '用户中心'})
+        return context
 
 
 class SSUserCreate(LoginRequiredMixin, generic.CreateView):
@@ -24,23 +59,73 @@ class SSUserCreate(LoginRequiredMixin, generic.CreateView):
             kwargs['code'] = self.request.GET.get('code')
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super(SSUserCreate, self).get_context_data(**kwargs)
+        context.update({'page_msg': 'Initial Shadowsocks', 'page_header': '开始科学上网'})
+        return context
 
-class InviteCodeCreate(generic.CreateView):
+
+class InviteCodeCreate(LoginRequiredMixin, StaffMixin, generic.CreateView):
     model = InviteCode
     form_class = forms.InviteCodeForm
-    success_url = '/ss/invites'
+    success_url = reverse_lazy('ss:invite_code_list')
 
-    @method_decorator(staff_member_required)
     def dispatch(self, request, *args, **kwargs):
         return super(InviteCodeCreate, self).dispatch(request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super(InviteCodeCreate, self).get_context_data(**kwargs)
+        context.update({'page_msg': 'Add Invitation Codes', 'page_header': '添加邀请码'})
+        return context
 
-class InviteCodeList(generic.ListView):
+
+class InviteCodeList(LoginRequiredMixin, generic.ListView):
     model = InviteCode
 
     def get_queryset(self):
-        return InviteCode.objects.filter(user=None)
+        return InviteCode.objects.filter(user=None).order_by('time_created')[:15]
+
+    def get_context_data(self, **kwargs):
+        context = super(InviteCodeList, self).get_context_data(**kwargs)
+        context.update({'page_msg': 'Invitation Codes', 'page_header': '邀请码'})
+        return context
 
 
-class NodeList(generic.ListView):
+class NodeList(SSLoginRequiredMixin, generic.ListView):
     model = Node
+
+    def get_context_data(self, **kwargs):
+        context = super(NodeList, self).get_context_data(**kwargs)
+        context.update({'page_header': '节点列表', 'page_msg': 'Node List'})
+        return context
+
+
+class NodeCreate(LoginRequiredMixin, StaffMixin, generic.CreateView):
+    model = Node
+    form_class = forms.NodeForm
+    success_url = reverse_lazy('ss:node_list')
+
+    def get_context_data(self, **kwargs):
+        context = super(NodeCreate, self).get_context_data(**kwargs)
+        context.update({'page_msg': 'Create Node', 'page_header': '添加节点'})
+        return context
+
+
+class CheckIn(SSLoginRequiredMixin, generic.View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(CheckIn, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request):
+        user = getattr(request.user, 'ss_user', None)
+        if timezone.now() - datetime.timedelta(days=1) > user.last_check_in_time:
+            if user.transfer_enable < 2 * 1024 * 1024 * 1024:
+                traffic = int(1024 * 1024 * 1024 + random.random() * 100 * 1024 * 1024)
+            else:
+                traffic = int(random.random() * 100 * 1024 * 1024)
+            user.transfer_enable += traffic
+            user.last_check_in_time = timezone.now()
+            user.save()
+            return JsonResponse({'msg': '获得了{:.2f}MB流量'.format(traffic / 1024 / 1024)})
+        else:
+            raise PermissionDenied('24小时内签到一次')

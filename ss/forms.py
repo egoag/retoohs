@@ -64,3 +64,9 @@ class InviteCodeForm(CrispyFormMixin, forms.ModelForm):
     class Meta:
         model = InviteCode
         fields = ('user', 'code', 'number')
+
+
+class NodeForm(CrispyFormMixin, forms.ModelForm):
+    class Meta:
+        model = Node
+        fields = '__all__'

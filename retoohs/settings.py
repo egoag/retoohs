@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'main',
     'ss',
 ]
 
@@ -114,6 +115,7 @@ elif _('DB_TYPE') == 'mysql':
 else:
     raise ValueError('Databases must be sqlite or mysql')
 
+AUTH_USER_MODEL = 'main.User'
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
 
@@ -137,7 +139,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'zh-Hans'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -154,7 +156,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/ss'
 
 # Crispy form
 CRISPY_TEMPLATE_PACK = 'bootstrap3'

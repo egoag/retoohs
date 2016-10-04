@@ -1,0 +1,27 @@
+{% extends '_base.html' %}
+{% load staticfiles %}
+
+{% block body %}
+    <div class="jumbotron">
+        <h2>retoohs</h2>
+        <p class="lead">科学上网</p>
+        <p><a class="btn btn-lg btn-success" href="{% url 'ss:index' %}" role="button">立即注册</a></p>
+    </div>
+
+    <div class="row marketing">
+        <div class="col-lg-6">
+            <h4>Android</h4>
+            <p><a href="{% static 'clients/shadowsocks.apk' %}">影梭</a></p>
+            <h4>Windows</h4>
+            <p><a href="{% static 'clients/shadowsocks.zip' %}">Shadowsocks-windows</a></p>
+        </div>
+
+        <div class="col-lg-6">
+            <h4>iOS</h4>
+            <p><a href="https://appsto.re/cn/UDjM3.i">Shadowrocket</a></p>
+
+            <h4>Mac OS</h4>
+            <p><a href="{% static 'clients/shadowsocks.dmg' %}">ShadowsocksX-NG</a></p>
+        </div>
+    </div>
+{% endblock %}

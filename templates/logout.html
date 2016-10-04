@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
+{% extends '_base.html' %}
 {% load crispy_forms_tags %}
 
 {% block body %}
-    <h1>Logged out</h1>
-    <a href="{% url 'login' %}">login</a>
+    <p class="text-center tile-title">已登出</p>
+{#    <a href="{% url 'login' %}">login</a>#}
 {% endblock %}

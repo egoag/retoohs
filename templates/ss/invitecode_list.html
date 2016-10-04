@@ -2,8 +2,84 @@
 {% load crispy_forms_tags %}
 
 {% block body %}
-    <h3>Invite Codes:</h3>
-    {% for invite_code in object_list %}
-        <li><a href="{% url 'ss:create' %}?code={{ invite_code.code }}">{{ invite_code.code }}</a></li>
-    {% endfor %}
+{#    <div class="card col-md-6">#}
+{#        <h4 class="card-title">Invite Codes:</h4>#}
+{#        <div class="table-responsive">#}
+{#            <table class="table table-striped">#}
+{#                <thead>#}
+{#                <tr>#}
+                    {#                <th>###</th>#}
+{#                    <th>邀请码</th>#}
+{#                    <th>状态</th>#}
+{#                </tr>#}
+{#                </thead>#}
+{#                <tbody>#}
+{#                {% for code in object_list %}#}
+{#                    <tr>#}
+                        {#                    <td>0</td>#}
+{#                        <td><a href="{% url 'ss:create' %}?code={{ code.code }}">{{ code.code }}</a></td>#}
+{#                        <td>可用</td>#}
+{#                    </tr>#}
+{#                {% endfor %}#}
+{#                </tbody>#}
+{#            </table>#}
+{#        </div>#}
+{#    </div>#}
+    <div class="row">
+        <div class="col-md-6">
+            <!-- TABLE: LATEST CODES -->
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">选择一组邀请码注册</h3>
+                    <br>
+
+{#                    <div class="box-tools pull-right">#}
+{#                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i#}
+{#                                class="fa fa-minus"></i>#}
+{#                        </button>#}
+{#                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>#}
+{#                        </button>#}
+{#                    </div>#}
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <table class="table no-margin">
+                            <thead>
+                            <tr>
+                                {#                        <th>Order ID</th>#}
+                                {#                        <th>Item</th>#}
+                                {#                        <th>Status</th>#}
+                                <th>邀请码</th>
+                                <th>状态</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for code in object_list %}
+                                <tr>
+                                    {#                            <td><a href="pages/examples/invoice.html">OR9842</a></td>#}
+                                    {#                            <td>Call of Duty IV</td>#}
+                                    {#                            <td><span class="label label-success">Shipped</span></td>#}
+                                    {#                            <td>#}
+                                    {#                                <div class="sparkbar" data-color="#00a65a" data-height="20">90,80,90,-70,61,-83,63</div>#}
+                                    {#                            </td>#}
+                                    <td><a href="{% url 'ss:create' %}?code={{ code.code }}">{{ code.code }}</a></td>
+                                    <td>可用</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.table-responsive -->
+                </div>
+                {#        <!-- /.box-body -->#}
+                {#        <div class="box-footer clearfix">#}
+                {#            <a href="javascript:void(0)" class="btn btn-sm btn-info btn-flat pull-left">Place New Order</a>#}
+                {#            <a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>#}
+                {#        </div>#}
+                {#        <!-- /.box-footer -->#}
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

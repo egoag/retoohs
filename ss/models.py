@@ -1,10 +1,12 @@
+import datetime
 from random import choice
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 from django.core import validators
 from django.dispatch import receiver
 from django.shortcuts import resolve_url
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
@@ -29,7 +31,7 @@ STATUS_CHOICES = (
 # Create your models here.
 class SSUser(models.Model):
     user = models.OneToOneField(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='ss_user',
     )
@@ -42,6 +44,7 @@ class SSUser(models.Model):
     last_check_in_time = models.DateTimeField(
             '最后签到时间',
             null=True,
+            default=datetime.datetime.fromtimestamp(0),
             editable=False,
     )
     invite_code = models.OneToOneField(
@@ -66,6 +69,7 @@ class SSUser(models.Model):
     last_use_time = models.IntegerField(
             '最后使用时间',
             default=0,
+            editable=False,
             help_text='时间戳',
             db_column='t',
     )
@@ -98,6 +102,24 @@ class SSUser(models.Model):
     def __str__(self):
         return self.user.username
 
+    def get_last_use_time(self):
+        return timezone.datetime.fromtimestamp(self.last_use_time)
+
+    def get_traffic(self):
+        return '{:.2f}'.format((self.download_traffic + self.upload_traffic) / 1024 / 1024)
+
+    def get_transfer(self):
+        return '{:.2f}'.format(self.transfer_enable / 1024 / 1024 / 1024)
+
+    def get_unused_traffic(self):
+        return '{:.2f}'.format((self.transfer_enable - self.download_traffic - self.upload_traffic) / 1024 / 1024 / 1024)
+
+    def get_used_percentage(self):
+        return (self.download_traffic + self.upload_traffic) / self.transfer_enable
+
+    def can_check_in(self):
+        return timezone.now() - datetime.timedelta(days=1) > self.last_check_in_time
+
     @classmethod
     def get_absolute_url(cls):
         return resolve_url('ss:index')
@@ -115,6 +137,7 @@ class SSUser(models.Model):
                 self.port = settings.START_PORT
 
     class Meta:
+        verbose_name = 'SS帐户'
         ordering = ('-last_check_in_time',)
         db_table = 'user'
 
@@ -144,7 +167,7 @@ class InviteCode(models.Model):
 
     def clean(self):
         # generate code if code exists
-        code_length = len(self.code)
+        code_length = len(self.code or '')
         if 0 < code_length < 16:
             self.code = '{}{}'.format(
                     self.code,
@@ -157,6 +180,10 @@ class InviteCode(models.Model):
              update_fields=None):
         self.clean()
         return super(InviteCode, self).save(force_insert, force_update, using, update_fields)
+
+    class Meta:
+        verbose_name = '邀请码'
+        ordering = ('-time_created',)
 
 
 class Node(models.Model):
@@ -202,6 +229,7 @@ class Node(models.Model):
 
     class Meta:
         ordering = ('-weight',)
+        verbose_name = '节点'
 
 
 @receiver(post_save, sender=SSUser)

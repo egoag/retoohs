@@ -1,11 +1,25 @@
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.template.response import TemplateResponse
+from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.utils.http import is_safe_url
 from django.shortcuts import resolve_url
+from django.views import generic
 from django.conf import settings
-from .forms import LoginForm
+from .forms import LoginForm, RegisterForm
+
+
+class Register(generic.CreateView):
+    form_class = RegisterForm
+    template_name = 'register.html'
+    success_url = reverse_lazy('ss:index')
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            return HttpResponseRedirect(reverse_lazy('ss:index'))
+        return super(Register, self).dispatch(request, *args, **kwargs)
 
 
 def login(request):
@@ -55,3 +69,16 @@ def logout(request):
     }
 
     return TemplateResponse(request, 'logout.html', context)
+
+
+class UserInfo(LoginRequiredMixin, generic.DetailView):
+    template_name = 'main/user_detail.html'
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super(UserInfo, self).get_context_data(**kwargs)
+        context.update({'page_msg': 'My Info', 'page_header': '我的信息'})
+        return context
+

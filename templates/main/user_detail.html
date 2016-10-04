@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <p>用户名：{{ object.username }}</p>
+                    <p>邮箱：{{ object.email }}</p>
+                    <p> 套餐：<span class="label label-info">{{ object.ss_user.get_plan_display }}</span></p>
+                    <p><a class="btn btn-danger btn-sm" href="#">删除我的账户</a></p>
+                </div><!-- /.box -->
+            </div>
+        </div>
+    </div>
+{% endblock %}

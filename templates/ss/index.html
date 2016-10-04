@@ -2,15 +2,104 @@
 {% load crispy_forms_tags %}
 
 {% block body %}
-    <div class="card">
-        {% if user.is_authenticated and user.ss_user %}
-            port: {{ user.ss_user.port }}
-            password: {{ user.ss_user.password }}
-            transfer: {{ user.ss_user.transfer_enable }}
-            upload_traffic: {{ user.ss_user.upload_traffic }}
-            download_traffic: {{ user.ss_user.download_traffic }}
-        {% else %}
-            <h4><a href="{% url 'ss:create' %}">Register ShadowSocks Account</a></h4>
-        {% endif %}
-    </div>
+            <!-- START PROGRESS BARS -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="box box-solid">
+                        <div class="box-header">
+                            <h3 class="box-title">公告&FAQ</h3>
+                        </div><!-- /.box-header -->
+                        <div class="box-body">
+                            <p>流量不会重置，可以通过签到获取流量。</p>
+                            <p>流量可以通过签到获取，基本每天可以用1G流量。</p>
+			                <p>服务器出问题的话可以微博私信我<a href="http://www.weibo.com/u/1851837275">有药吃</a>。</p>
+                        </div><!-- /.box-body -->
+                    </div><!-- /.box -->
+                </div><!-- /.col (right) -->
+
+                <div class="col-md-6">
+                    <div class="box box-solid">
+                        <div class="box-header">
+                            <h3 class="box-title">流量使用情况</h3>
+                        </div><!-- /.box-header -->
+                        <div class="box-body">
+                            <p> 已用流量：{{ user.ss_user.get_traffic }}MB </p>
+                            <div class="progress progress-striped">
+                                <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: {{ user.ss_user.get_used_percentage }}%">
+                                    <span class="sr-only">Transfer</span>
+                                </div>
+                            </div>
+                            <p> 可用流量：{{ user.ss_user.get_transfer }}GB </p>
+                            <p> 剩余流量：{{ user.ss_user.get_unused_traffic }}GB </p>
+                        </div><!-- /.box-body -->
+                    </div><!-- /.box -->
+                </div><!-- /.col (left) -->
+
+
+
+                <div class="col-md-6">
+                    <div class="box box-solid">
+                        <div class="box-header">
+                            <h3 class="box-title">签到获取流量</h3>
+                        </div><!-- /.box-header -->
+                        <div class="box-body">
+                            <p> 24小时内可以签到一次。</p>
+                            {% if user.ss_user.can_check_in %}
+                            <p id="checkin-btn"> <button id="checkin" class="btn btn-success  btn-flat">签到</button></p>
+                            {% else %}
+                            <p><a class="btn btn-success btn-flat disabled" href="#">不能签到</a> </p>
+                            {% endif %}
+                            <p id="checkin-msg" ></p>
+                            <p>上次签到时间：<code>{{ user.ss_user.last_check_in_time }}</code></p>
+                        </div><!-- /.box-body -->
+                    </div><!-- /.box -->
+                </div><!-- /.col (right) -->
+
+                <div class="col-md-6">
+                    <div class="box box-solid">
+                        <div class="box-header">
+                            <h3 class="box-title">连接信息</h3>
+                        </div><!-- /.box-header -->
+                        <div class="box-body">
+                            <p> 端口：<code>{{ user.ss_user.port }}</code> </p>
+                            <p> 密码：{{ user.ss_user.password }} </p>
+                            <p> 套餐：<span class="label label-info">{{ user.ss_user.get_plan_display }}</span> </p>
+                            <p> 最后使用时间：<code>{{ user.ss_user.get_last_use_time }}</code> </p>
+                        </div><!-- /.box-body -->
+                    </div><!-- /.box -->
+                </div><!-- /.col (right) -->
+            </div><!-- /.row -->
+            <!-- END PROGRESS BARS -->
+{#    <div class="card">#}
+{#        {% if user.is_authenticated and user.ss_user %}#}
+{#            port: {{ user.ss_user.port }}#}
+{#            password: {{ user.ss_user.password }}#}
+{#            transfer: {{ user.ss_user.transfer_enable }}#}
+{#            upload_traffic: {{ user.ss_user.upload_traffic }}#}
+{#            download_traffic: {{ user.ss_user.download_traffic }}#}
+{#        {% else %}#}
+{#            <h4><a href="{% url 'ss:create' %}">Register ShadowSocks Account</a></h4>#}
+{#        {% endif %}#}
+{#    </div>#}
+{% endblock %}
+
+{% block footer %}
+    <script>
+    $(document).ready(function(){
+        $("#checkin").click(function(){
+            $.ajax({
+                type:"POST",
+                url:"{% url 'ss:check_in' %}",
+                dataType:"json",
+                success:function(data){
+                    $("#checkin-msg").html(data.msg);
+                    $("#checkin-btn").hide();
+                },
+                error:function(jqXHR){
+                    alert("发生错误："+jqXHR.status);
+                }
+            })
+        })
+    })
+</script>
 {% endblock %}
