@@ -116,6 +116,7 @@ else:
     raise ValueError('Databases must be sqlite or mysql')
 
 AUTH_USER_MODEL = 'main.User'
+AUTHENTICATION_BACKENDS = ['main.backends.MyUserBackend']
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
 
