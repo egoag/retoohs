@@ -15,7 +15,7 @@ from urllib.request import urljoin
 import retoohs.settings_local_sample as sample_config
 
 try:
-    import rtc_public_api.settings_local as config
+    import retoohs.settings_local as config
 except ImportError:
     config = {}
 
@@ -39,7 +39,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '#q)ccsgnk86hc(wkc^vut8x68n!9ob8+6&5xf8n44t8&@^qm*j'
+SECRET_KEY = _('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = _('DEBUG', bool)
@@ -166,3 +166,4 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 GB = 1024 * 1024 * 1024
 DEFAULT_TRAFFIC = 10 * GB
 START_PORT = 10000
+ADMIN_URL = _('ADMIN_URL')
