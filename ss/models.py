@@ -115,7 +115,7 @@ class SSUser(models.Model):
         return '{:.2f}'.format((self.transfer_enable - self.download_traffic - self.upload_traffic) / 1024 / 1024 / 1024)
 
     def get_used_percentage(self):
-        return (self.download_traffic + self.upload_traffic) / self.transfer_enable
+        return (self.download_traffic + self.upload_traffic) / self.transfer_enable * 100
 
     def can_check_in(self):
         return timezone.now() - datetime.timedelta(days=1) > self.last_check_in_time
