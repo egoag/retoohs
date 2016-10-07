@@ -238,6 +238,7 @@
 {#        <li><a href="#"><i class="fa fa-circle-o"></i> <span>修改资料</span></a></li>#}
         <li><a href="{% url 'ss:invite_code_list' %}"><i class="fa fa-code-fork"></i> <span>邀请码</span></a></li>
         <li><a href="{% url 'my' %}"><i class="fa fa-link"></i> <span>我的信息</span></a></li>
+        <li><a href="{% url 'donate' %}"><i class="fa fa-link"></i> <span>捐赠</span></a></li>
           {% if request.user.is_staff %}
         <li><a href="{% url 'ss:node_create' %}"><i class="fa fa-link"></i> <span>节点编辑</span></a></li>
         <li><a href="#"><i class="fa fa-link"></i> <span>查看用户</span></a></li>

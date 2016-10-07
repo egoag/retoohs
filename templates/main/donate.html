@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <h3 class="box-title">捐赠</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <p>你的捐赠会用来维护和添购服务器。</p>
+                    <img src="{% static 'img/donate.png' %}" alt="donate" style="width: 20vh">
+                </div><!-- /.box -->
+            </div>
+        </div>
+    </div>
+{% endblock %}
