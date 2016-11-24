@@ -19,6 +19,9 @@ class User(AbstractUser):
         self.password = md5(raw_password.encode()).hexdigest()
         self._password = raw_password
 
+    def check_password(self, raw_password):
+        return self.password == md5(raw_password.encode()).hexdigest()
+
     class Meta(AbstractUser.Meta):
         verbose_name = '用户'
 

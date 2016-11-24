@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 from urllib.request import urljoin
+from django.conf.global_settings import STATICFILES_FINDERS
 import retoohs.settings_local_sample as sample_config
 
 try:
@@ -58,6 +59,14 @@ INSTALLED_APPS = [
     'crispy_forms',
     'main',
     'ss',
+    'el_pagination',
+    'easy_thumbnails',
+    'constance',
+    'constance.backends.database',
+    'djangobower',
+    'lbforum',
+    'lbattachment',
+    'lbutils',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -84,6 +93,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -156,8 +166,8 @@ STATIC_ROOT = _('STATIC_ROOT')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = '/ss'
+LOGIN_URL = '/login'
+LOGIN_REDIRECT_URL = '/'
 
 # Crispy form
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
@@ -167,3 +177,41 @@ GB = 1024 * 1024 * 1024
 DEFAULT_TRAFFIC = 10 * GB
 START_PORT = 10000
 ADMIN_URL = _('ADMIN_URL')
+
+# LBForum
+LBFORUM_TITLE = _('LBFORUM_TITLE') or 'retoohs'
+HOST_URL = 'localhost'
+MEDIA_URL_ = '/media/'
+MEDIA_URL = HOST_URL + MEDIA_URL_
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+SIGNUP_URL = '/register'
+LOGOUT_URL = '/logout'
+CHANGE_PASSWORD_URL = '/accounts/password/change/'
+
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+
+CONSTANCE_CONFIG = {
+    'forbidden_words': ('', 'Forbidden words', str),
+}
+
+STATICFILES_FINDERS += ('djangobower.finders.BowerFinder',)
+
+BOWER_COMPONENTS_ROOT = BASE_DIR
+
+BOWER_INSTALLED_APPS = (
+    'jquery#1.12',
+    'markitup#1.1.14',
+    'mediaelement#2.22.0',
+    'blueimp-file-upload#9.12.5',
+)
+
+BBCODE_AUTO_URLS = True
+
+# add allow tags
+HTML_SAFE_TAGS = ['embed']
+HTML_SAFE_ATTRS = ['allowscriptaccess', 'allowfullscreen', 'wmode']
+
+# add forbid tags
+HTML_UNSAFE_TAGS = []
+HTML_UNSAFE_ATTRS = []

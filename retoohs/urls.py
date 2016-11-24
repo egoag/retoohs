@@ -23,4 +23,6 @@ urlpatterns = [
     url(r'^{}/'.format(getattr(settings, 'ADMIN_URL', 'admin')), admin.site.urls),
     url(r'^ss/', include('ss.urls', namespace='ss')),
     url(r'^', include('main.urls')),
+    url(r'^forums/', include('lbforum.urls')),
+    url(r'^attachments/', include('lbattachment.urls')),
 ]
