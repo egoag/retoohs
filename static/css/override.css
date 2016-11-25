@@ -1,0 +1,17 @@
+#Wrapper {
+    background-color: transparent!important;
+    background-image: none!important;
+}
+
+.fade {
+    opacity: 1 !important;
+}
+
+#Rightbar td {
+    padding-left: 10px;
+}
+
+form td {
+    padding-left: 10px;
+    padding-bottom: 10px;
+}

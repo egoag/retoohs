@@ -21,8 +21,8 @@ from django.contrib import admin
 urlpatterns = [
     url('^$', TemplateView.as_view(template_name='index.html'), name='index'),
     url(r'^{}/'.format(getattr(settings, 'ADMIN_URL', 'admin')), admin.site.urls),
-    url(r'^ss/', include('ss.urls', namespace='ss')),
+    url(r'^dashboard/forums/', include('lbforum.urls')),
+    url(r'^dashboard/', include('ss.urls', namespace='ss')),
     url(r'^', include('main.urls')),
-    url(r'^forums/', include('lbforum.urls')),
     url(r'^attachments/', include('lbattachment.urls')),
 ]

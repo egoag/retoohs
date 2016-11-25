@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'lbforum/styles/v2ex/default.css' %}"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'css/override.css' %}"/>
+{% endblock %}
+
+{% block body %}
+    {% block content %}
+    {% endblock %}
+{% endblock %}

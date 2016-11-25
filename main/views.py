@@ -23,7 +23,11 @@ class Register(generic.CreateView):
 
 
 def login(request):
-    redirect_to = request.POST.get('next', request.GET.get('next', ''))
+    redirect_to = request.POST.get('next', request.GET.get('next', '/dashboard'))
+    if not request.user.is_anonymous():
+        if not is_safe_url(url=redirect_to, host=request.get_host()):
+            redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
+        return HttpResponseRedirect(redirect_to)
     if request.method == "POST":
         form = LoginForm(request, redirect_to=redirect_to, data=request.POST)
         if form.is_valid():
@@ -81,4 +85,3 @@ class UserInfo(LoginRequiredMixin, generic.DetailView):
         context = super(UserInfo, self).get_context_data(**kwargs)
         context.update({'page_msg': 'My Info', 'page_header': '我的信息'})
         return context
-
