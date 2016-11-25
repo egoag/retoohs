@@ -180,7 +180,7 @@ ADMIN_URL = _('ADMIN_URL')
 
 # LBForum
 LBFORUM_TITLE = _('LBFORUM_TITLE') or 'retoohs'
-HOST_URL = 'localhost'
+HOST_URL = _('HOST_URL') or ''
 MEDIA_URL_ = '/media/'
 MEDIA_URL = HOST_URL + MEDIA_URL_
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
