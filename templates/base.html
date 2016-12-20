@@ -162,7 +162,7 @@
 
                 <p>
                   {{ request.user.username }}
-                  <small>加入时间：{{ request.user.joined_at }}</small>
+                  <small>加入时间：{{ request.user.date_joined }}</small>
                 </p>
               </li>
 {#              <!-- Menu Body -->#}
@@ -242,9 +242,9 @@
         <li><a href="{% url 'donate' %}"><i class="fa fa-link"></i> <span>捐赠</span></a></li>
           {% if request.user.is_staff %}
         <li><a href="{% url 'ss:node_create' %}"><i class="fa fa-link"></i> <span>节点编辑</span></a></li>
-        <li><a href="#"><i class="fa fa-link"></i> <span>查看用户</span></a></li>
         <li><a href="{% url 'ss:create_invite_code' %}"><i class="fa fa-link"></i> <span>邀请管理</span></a></li>
-        <li><a href="#"><i class="fa fa-gears"></i> <span>系统信息</span></a></li>
+{#        <li><a href="#"><i class="fa fa-link"></i> <span>查看用户</span></a></li>#}
+{#        <li><a href="#"><i class="fa fa-gears"></i> <span>系统信息</span></a></li>#}
           {% endif %}
 {#        <li class="treeview">#}
 {#          <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>#}
