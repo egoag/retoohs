@@ -11,10 +11,11 @@ class RegisterForm(UserCreationForm):
         self.helper.form_class = 'form-horizontal'
         self.helper.add_input(Submit('submit', '确定', css_class="btn-primary", style="margin-left:18px; width: 98px"))
         super(RegisterForm, self).__init__(*args, **kwargs)
+        self.fields['email'].required = True
 
     class Meta:
         model = get_user_model()
-        fields = ("username",)
+        fields = ('username', 'email')
 
 
 class LoginForm(forms.Form):
