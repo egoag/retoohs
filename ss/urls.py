@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^invites', views.InviteCodeList.as_view(), name='invite_code_list'),
     url(r'^nodes$', views.NodeList.as_view(), name='node_list'),
     url(r'^nodes/create$', views.NodeCreate.as_view(), name='node_create'),
+    url(r'^qr-code$', views.get_ss_qr, name='qr_code'),
 ]

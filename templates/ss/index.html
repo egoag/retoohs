@@ -64,7 +64,32 @@
                             <p> 端口：<code>{{ user.ss_user.port }}</code> </p>
                             <p> 密码：{{ user.ss_user.password }} </p>
                             <p> 套餐：<span class="label label-info">{{ user.ss_user.get_plan_display }}</span> </p>
+                            <!-- Button trigger modal -->
+                            <p> 自动设置:
+                                <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#myModal" style="background-color: #39C5BB;border-color: #39C5BB; color: white">
+                                    查看二维码
+                                </button>
+                            </p>
                             <p> 最后使用时间：<code>{{ user.ss_user.get_last_use_time }}</code> </p>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+                                 aria-labelledby="myModalLabel">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title" id="myModalLabel" style="text-align: center">
+                                                用各种客户端扫一下
+                                            </h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <img src="{% url 'ss:qr_code' %}" height="200" width="200" style="display: block;margin: 0 auto;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div><!-- /.box-body -->
                     </div><!-- /.box -->
                 </div><!-- /.col (right) -->

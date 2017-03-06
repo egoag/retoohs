@@ -1,10 +1,13 @@
 import random
+import qrcode
+import base64
 import datetime
+from io import StringIO
 from django.views import generic
 from django.utils import timezone
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
-from django.http.response import JsonResponse
+from django.http.response import JsonResponse, HttpResponse
 from django.core.urlresolvers import reverse_lazy
 from django.core.exceptions import PermissionDenied
 from django.utils.decorators import method_decorator
@@ -129,3 +132,30 @@ class CheckIn(SSLoginRequiredMixin, generic.View):
             return JsonResponse({'msg': '获得了{:.2f}MB流量'.format(traffic / 1024 / 1024)})
         else:
             raise PermissionDenied('24小时内签到一次')
+
+
+def get_ss_qr(request):
+    if request.user.is_anonymous():
+        return JsonResponse({'error': 'unauthorized'})
+
+    if not hasattr(request.user, 'ss_user'):
+        return JsonResponse({'error': 'no linked shadowsocks account'})
+    ss_user = request.user.ss_user
+
+    if request.GET.get('nid'):
+        try:
+            node = Node.objects.get(pk=request.GET.get('nid'))
+        except Node.DoesNotExist:
+            return JsonResponse({'error': 'node not exist'})
+    else:
+        node = Node.objects.all().order_by('-weight')
+        if node:
+            node = node[0]
+        else:
+            return JsonResponse({'error': 'no node at all'})
+
+    password = '{}:{}@{}:{}'.format(node.method, ss_user.password, node.server, ss_user.port)
+    img = qrcode.make('ss://{}'.format(base64.b64encode(bytes(password, 'utf8')).decode('ascii')))
+    response = HttpResponse(content_type="image/png")
+    img.save(response)
+    return response
