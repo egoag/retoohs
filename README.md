@@ -1,7 +1,7 @@
 # retoohs
 
 Another site like [ss-panel](https://github.com/orvice/ss-panel), based on Django + AdminLTE.  
-Demo: [https://retoohs.com](https://retoohs.com).  
+Demo: [https://retoohs.herokuapp.com](https://retoohs.herokuapp.com).  
 *This project is under development* 
 
 # Requirements
