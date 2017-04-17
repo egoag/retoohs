@@ -122,6 +122,17 @@ elif _('DB_TYPE') == 'mysql':
             'PASSWORD': _('DB_PASS'),
         }
     }
+elif _('DB_TYPE') == 'postgres':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': _('DB_NAME'),
+            'USER': _('DB_USER'),
+            'PASSWORD': _('DB_PASS'),
+            'HOST': _('DB_HOST'),
+            'PORT': _('DB_PORT', int),
+        }
+    }
 else:
     raise ValueError('Databases must be sqlite or mysql')
 
