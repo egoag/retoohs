@@ -1,16 +1,227 @@
 {% extends 'base.html' %}
 
+{% load staticfiles %}
+
 {% block body %}
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
+
+            <!-- Profile Image -->
             <div class="box box-primary">
-                <div class="box-body">
-                    <p>用户名：{{ object.username }}</p>
-                    <p>邮箱：{{ object.email }}</p>
-                    <p> 套餐：<span class="label label-info">{{ object.ss_user.get_plan_display }}</span></p>
-                    <p><a class="btn btn-danger btn-sm" href="#">删除我的账户</a></p>
-                </div><!-- /.box -->
+                <div class="box-body box-profile">
+                    <img class="profile-user-img img-responsive img-circle" src="{% static 'img/gravatar.png' %}"
+                         alt="User profile picture">
+
+                    <h3 class="profile-username text-center">{{ object.username }}</h3>
+
+                    <p class="text-muted text-center">已经使用retoohs {{ object.get_age }}了</p>
+
+                    <ul class="list-group list-group-unbordered">
+                        <li class="list-group-item">
+                            {% if object.email_verified %}
+                                <b>邮箱</b> <a class="pull-right">{{ object.email }}</a>
+                            {% else %}
+                                <b>邮箱</b>
+                                <p class="pull-right">
+                                    {{ object.email }}
+                                    <button type="button" class="btn btn-warning btn-sm" data-toggle="modal"
+                                            data-target="#email-modal" style="margin-left: 5px">未激活
+                                    </button>
+                                </p>
+
+                                <div class="modal fade" tabindex="-1" role="dialog" id="email-modal">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content" style="border-radius: 6px;">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close"><span aria-hidden="true">&times;</span>
+                                                </button>
+                                                <h4 class="modal-title">邮箱未激活</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>需要激活邮箱才能继续</p>
+                                                <p>请检查邮箱{{ object.email }}，请勿使用QQ邮箱_(´ཀ`」 ∠)_</p>
+                                                <p>
+                                                    如果一直收不到邮件:
+                                                    <button class="btn btn-sm btn-default" onclick="this.disabled=true; resend_email();">
+                                                        重新发送邮件
+                                                    </button>
+                                                </p>
+                                                <p>
+                                                    或者换一个新的<label for="new-email">邮件地址</label>:
+                                                    <input type="email" id="new-email">
+                                                    <button class="btn btn-sm btn-default" onclick="this.disabled=true; change_email();">
+                                                        提交
+                                                    </button>
+                                                </p>
+                                            </div>
+{#                                            <div class="modal-footer">#}
+{#                                                <button type="button" class="btn btn-default" data-dismiss="modal">#}
+{#                                                    Close#}
+{#                                                </button>#}
+{#                                                <button type="button" class="btn btn-primary">Save changes</button>#}
+{#                                            </div>#}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal fade" tabindex="-1" role="dialog" id="common-inform">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content" style="border-radius: 6px;">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close"><span aria-hidden="true">&times;</span>
+                                                </button>
+                                                <h4 class="modal-title" id="inform_title">激活邮件发送成功</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p id="inform_body">请检查邮箱{{ object.email }}，不要使用QQ邮箱_(´ཀ`」 ∠)_</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            {% endif %}
+                        </li>
+                        <li class="list-group-item">
+                            <b>套餐</b> <a class="pull-right">{{ object.ss_user.get_plan_display }}</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>消耗了</b> <a class="pull-right">{{ object.ss_user.get_transfer }} GB</a>
+                        </li>
+                    </ul>
+
+                    <a class="btn btn-block btn-danger" href="#" data-toggle="modal" data-target="#destroy-account"
+                       style="margin-left: 5px">
+                        <b>删除我的账户</b>
+                    </a>
+
+                    <div class="modal fade" tabindex="-1" role="dialog" id="destroy-account">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content" style="border-radius: 6px;">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal"
+                                            aria-label="Close"><span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h4 class="modal-title" id="inform_title">确定要删除账号吗?</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <p id="inform_body">请输入用户名，确定删除账号.</p>
+                                    <label for="username-input"><p class="danger">用户名</p></label>
+                                    <input type="text" id="username-input">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                                        取消
+                                    </button>
+                                    <button type="button" class="btn btn-danger" onclick="destroy_account();">
+                                        删除
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" tabindex="-1" role="dialog" id="common-inform2">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content" style="border-radius: 6px;">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal"
+                                            aria-label="Close"><span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h4 class="modal-title" id="inform_title2">激活邮件发送成功</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <p id="inform_body2">请检查邮箱{{ object.email }}，不要使用QQ邮箱_(´ཀ`」 ∠)_</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.box-body -->
             </div>
+            <!-- /.box -->
         </div>
     </div>
+{% endblock %}
+
+{% block footer %}
+    <script>
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+
+        function resend_email() {
+            $.ajax({
+                url: '{% url 'email_resend' %}',
+                method: 'post',
+                data: {'csrfmiddlewaretoken': csrftoken},
+                success: function () {
+                    $('#inform_title').text('重新发送成功!');
+                    $('#inform_body').text('请检查邮箱{{ object.email }}');
+                    $('#common-inform').modal();
+                },
+                error: function () {
+                    $('#inform_title').text('重新发送失败？');
+                    $('#inform_body').text('？？？');
+                    $('#common-inform').modal();
+                }
+            })
+        }
+
+        function change_email() {
+            $.ajax({
+                url: '{% url 'email_change' %}',
+                method: 'post',
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'email': $('#new-email').val()
+                },
+                success: function (data) {
+                    $('#inform_title').text('修改成功!');
+                    $('#inform_body').text('给新的地址重新发送了激活邮件');
+                    $('#common-inform').modal();
+                },
+                error: function (err) {
+                    $('#inform_title').text('修改失败？');
+                    $('#inform_body').text(JSON.stringify(err.responseJSON));
+                    $('#common-inform').modal();
+                }
+            })
+        }
+
+        function destroy_account() {
+            if ($('#username-input').val() === '{{ object.username }}'){
+                $.ajax({
+                    url: '{% url 'destroy_account' %}',
+                    method: 'post',
+                    data: {
+                        'csrfmiddlewaretoken': csrftoken
+                    },
+                    success: function () {
+                        window.location.href = '/';
+                    }
+                })
+            } else {
+                $('#inform_title2').text('用户名错误');
+                $('#inform_body2').text('用户名错误');
+                $('#common-inform2').modal();
+            }
+        }
+
+    </script>
 {% endblock %}

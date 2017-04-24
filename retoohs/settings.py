@@ -47,6 +47,23 @@ DEBUG = _('DEBUG', bool)
 
 ALLOWED_HOSTS = ['*']
 
+# Email
+
+EMAIL_HOST = _('EMAIL_HOST')
+EMAIL_HOST_PASSWORD = _('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = _('EMAIL_HOST_USER')
+EMAIL_PORT = _('EMAIL_PORT', int)
+EMAIL_SUBJECT_PREFIX = _('EMAIL_SUBJECT_PREFIX')
+EMAIL_USE_TLS = _('EMAIL_USE_TLS', bool)
+EMAIL_USE_SSL = _('EMAIL_USE_SSL', bool)
+EMAIL_SENDER = _('EMAIL_SENDER')
+
+# Site URL
+
+SITE_URL = _('SITE_URL').strip()
+EMAIL_VERIFICATION_URL = SITE_URL + '/email-verify/{}'
+EMAIL_VERIFICATION_EXPIRE_HOURS = 12
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -138,6 +155,8 @@ else:
 
 AUTH_USER_MODEL = 'main.User'
 AUTHENTICATION_BACKENDS = ['main.backends.MyUserBackend']
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
 

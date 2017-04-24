@@ -5,6 +5,7 @@ import datetime
 from io import StringIO
 from django.views import generic
 from django.utils import timezone
+from django.contrib import messages
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from django.http.response import JsonResponse, HttpResponse
@@ -27,11 +28,22 @@ class StaffMixin(object):
         return super(StaffMixin, self).dispatch(request, *args, **kwargs)
 
 
+class EmailVerifiedRequiredMixin(LoginRequiredMixin):
+    login_url = reverse_lazy('my')
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated() or not request.user.email_verified:
+            messages.add_message(request, messages.WARNING, '邮箱未激活')
+            return self.handle_no_permission()
+        return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
+
+
 class SSLoginRequiredMixin(LoginRequiredMixin):
     login_url = reverse_lazy('ss:create')
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated() or not getattr(request.user, 'ss_user', None):
+            messages.add_message(request, messages.WARNING, '需要激活Shadowsocks账号')
             return self.handle_no_permission()
         return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
 
@@ -45,7 +57,7 @@ class Index(SSLoginRequiredMixin, TemplateView):
         return context
 
 
-class SSUserCreate(LoginRequiredMixin, generic.CreateView):
+class SSUserCreate(EmailVerifiedRequiredMixin, generic.CreateView):
     model = SSUser
     form_class = forms.SSUserForm
 

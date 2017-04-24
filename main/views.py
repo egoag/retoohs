@@ -1,14 +1,21 @@
+import datetime
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.template.response import TemplateResponse
 from django.core.urlresolvers import reverse_lazy
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.utils.http import is_safe_url
 from django.shortcuts import resolve_url
+from django.core.mail import send_mail
 from django.views import generic
+from django.utils import timezone
 from django.conf import settings
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 from .forms import LoginForm, RegisterForm
+from .serializers import ChangeEmailSerializer, DeleteMyAccountSerializer
+from main.models import User, EmailVerification
 
 
 class Register(generic.CreateView):
@@ -85,3 +92,94 @@ class UserInfo(LoginRequiredMixin, generic.DetailView):
         context = super(UserInfo, self).get_context_data(**kwargs)
         context.update({'page_msg': 'My Info', 'page_header': '我的信息'})
         return context
+
+
+def verify_email(request, code):
+    if not request.user.is_anonymous():
+        HttpResponseRedirect('/dashboard')
+
+    try:
+        email_verification = EmailVerification.objects.get(code=code)
+    except EmailVerification.DoesNotExist:
+        context = {
+            'error': 'Email verify failed, verification code is not correct.'
+        }
+    else:
+        if email_verification.time_created < timezone.now() - datetime.timedelta(
+                hours=settings.EMAIL_VERIFICATION_EXPIRE_HOURS):
+            context = {
+                'error': 'Email verify failed, verification code has expired.'
+            }
+        else:
+            email_verification.user.email_verified = True
+            email_verification.user.save()
+            email_verification.delete()
+            context = {
+                'success': 'Email verify successfully, please log in.'
+            }
+    return TemplateResponse(request, 'main/email_verification.html', context)
+
+
+class UserUpdateEmail(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = ChangeEmailSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        return self.request.user
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        EmailVerification.objects.filter(user=instance).delete()  # otherwise user can register others email
+        email_verification = EmailVerification.objects.create(user=instance)
+        send_mail(
+            'Active your account',
+            """
+Hi {USERNAME},
+  Welcome to retoohs!
+  Please click this link {VERIFICATION_CODE} to active your account.
+            """.format(
+                USERNAME=instance.username,
+                VERIFICATION_CODE=settings.EMAIL_VERIFICATION_URL.format(email_verification.code)),
+            settings.EMAIL_SENDER,
+            [instance.email],
+        )
+        instance.email_verified = False
+        instance.save()  # set not email verified
+
+    def post(self, request, *args, **kwargs):
+        return super(UserUpdateEmail, self).update(request, *args, **kwargs)
+
+
+def resend_email(request):
+    if not request.user.is_authenticated():
+        return JsonResponse({'error': 'Please log in first.'})
+
+    if request.user.email_verified:
+        return JsonResponse({'error': 'Email already verified.'})
+
+    email_verification = EmailVerification.objects.create(user=request.user)
+    send_mail(
+        'Active your account',
+        """
+Hi {USERNAME},
+Welcome to retoohs!
+Please click this link {VERIFICATION_CODE} to active your account.
+        """.format(
+            USERNAME=request.user.username,
+            VERIFICATION_CODE=settings.EMAIL_VERIFICATION_URL.format(email_verification.code)),
+        settings.EMAIL_SENDER,
+        [request.user.email],
+    )
+    return JsonResponse({'ok': True})
+
+
+class DeleteMyAccount(generics.DestroyAPIView):
+    queryset = User.objects.all()
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        return self.request.user
+
+    def post(self, request, *args, **kwargs):
+        return super(DeleteMyAccount, self).destroy(request, *args, **kwargs)
