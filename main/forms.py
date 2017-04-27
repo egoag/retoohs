@@ -1,11 +1,18 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import forms as auth_forms
 from django.contrib.auth import get_user_model, authenticate
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit, Button, Row, Field
 
 
-class RegisterForm(UserCreationForm):
+class CrispyFormMixin(object):
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', '确定'))
+        super(CrispyFormMixin, self).__init__(*args, **kwargs)
+
+
+class RegisterForm(auth_forms.UserCreationForm):
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
@@ -43,6 +50,8 @@ class LoginForm(forms.Form):
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
         self.helper.add_input(Submit('submit', '确定', css_class="btn-primary", style="margin-left:18px; width: 98px"))
+        self.helper.add_input(Button('forgot-password', '找回密码', css_class="btn-warning",
+                                     style="margin-left:18px; width: 98px", onclick="location.href='/password_reset';"))
         super(LoginForm, self).__init__(*args, **kwargs)
         self.request = request
         self.user_cache = None
@@ -54,9 +63,9 @@ class LoginForm(forms.Form):
         if self.fields['username'].label is None:
             self.fields['username'].label = self.username_field.verbose_name
 
-        # self.helper.add_input(
-        #     Button('button', '找回密码', onclick='window.location.href="/password-reset"',
-        #            style="margin-left:18px; width: 98px"))
+            # self.helper.add_input(
+            #     Button('button', '找回密码', onclick='window.location.href="/password-reset"',
+            #            style="margin-left:18px; width: 98px"))
 
     def clean(self):
         username = self.cleaned_data.get('username')
@@ -100,3 +109,18 @@ class LoginForm(forms.Form):
 
     def get_user(self):
         return self.user_cache
+
+
+class PasswordChangeForm(CrispyFormMixin, auth_forms.PasswordChangeForm):
+    pass
+
+
+class PasswordResetForm(CrispyFormMixin, auth_forms.PasswordResetForm):
+    def get_users(self, email):
+        active_users = get_user_model()._default_manager.filter(
+            email__iexact=email, is_active=True)
+        return active_users
+
+
+class SetPasswordForm(CrispyFormMixin, auth_forms.SetPasswordForm):
+    pass

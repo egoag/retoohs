@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-4 col-xs-8 col-sm-6" style="min-width: 350px;">
 
             <!-- Profile Image -->
             <div class="box box-primary">
@@ -90,6 +90,10 @@
                             <b>消耗了</b> <a class="pull-right">{{ object.ss_user.get_transfer }} GB</a>
                         </li>
                     </ul>
+
+                    <a class="btn btn-block btn-warning" href="{% url 'password_change' %}" style="margin-left: 5px">
+                        <b>修改密码</b>
+                    </a>
 
                     <a class="btn btn-block btn-danger" href="#" data-toggle="modal" data-target="#destroy-account"
                        style="margin-left: 5px">

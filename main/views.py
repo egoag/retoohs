@@ -3,6 +3,7 @@ from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.template.response import TemplateResponse
+from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect, JsonResponse
 from django.utils.http import is_safe_url
@@ -132,15 +133,14 @@ class UserUpdateEmail(generics.UpdateAPIView):
         instance = serializer.save()
         EmailVerification.objects.filter(user=instance).delete()  # otherwise user can register others email
         email_verification = EmailVerification.objects.create(user=instance)
+        message = render_to_string('main/email_verification_email.html', context={
+            'site_name': 'retoohs',
+            'username': instance.username,
+            'active_link': settings.EMAIL_VERIFICATION_URL.format(email_verification.code),
+        })
         send_mail(
             'Active your account',
-            """
-Hi {USERNAME},
-  Welcome to retoohs!
-  Please click this link {VERIFICATION_CODE} to active your account.
-            """.format(
-                USERNAME=instance.username,
-                VERIFICATION_CODE=settings.EMAIL_VERIFICATION_URL.format(email_verification.code)),
+            message,
             settings.EMAIL_SENDER,
             [instance.email],
         )
@@ -159,15 +159,14 @@ def resend_email(request):
         return JsonResponse({'error': 'Email already verified.'})
 
     email_verification = EmailVerification.objects.create(user=request.user)
+    message = render_to_string('main/email_verification_email.html', context={
+        'site_name': 'retoohs',
+        'username': request.user.username,
+        'active_link': settings.EMAIL_VERIFICATION_URL.format(email_verification.code),
+    })
     send_mail(
         'Active your account',
-        """
-Hi {USERNAME},
-Welcome to retoohs!
-Please click this link {VERIFICATION_CODE} to active your account.
-        """.format(
-            USERNAME=request.user.username,
-            VERIFICATION_CODE=settings.EMAIL_VERIFICATION_URL.format(email_verification.code)),
+        message,
         settings.EMAIL_SENDER,
         [request.user.email],
     )

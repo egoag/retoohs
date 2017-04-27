@@ -4,13 +4,13 @@ Another site like [ss-panel](https://github.com/orvice/ss-panel), based on Djang
 Demo: [https://retoohs.herokuapp.com](https://retoohs.herokuapp.com).  
 *This project is under development* 
 
-# Requirements
+## Requirements
 
  -  Python 3.5
- -  Django 1.9
- -  Web Server (Nginx or Apache)
+ -  Django 1.10
+ -  Web Server (Nginx or Apache for production environment)
  
-# Tutorial
+## Installation
 
 Clone or download an release, install the requirements (or via virtualenv): 
 
@@ -30,12 +30,12 @@ Start server:
 
 Now you can visit `http://localhost:8000` and see the result.
 
-# Settings
+## Settings
 
 You can customize settings file `retoohs/settings_local.py`, or use environment variables.  
 For detail reference `retoohs/settings_local_sample.py`.
 
-# Docker
+## Docker
 
 Available Docker image is at [daocloud](http://dashboard.daocloud.io/packages/20dc328d-a26b-43ea-83d2-c4d8ce02bba0),
  with uWSGI as application server and socket file volumed at `/var/www/retoohs/socket/retoohs.sock`, 
@@ -92,3 +92,9 @@ location /static {
 }
 ...
 ```
+
+## ToDo
+
+- Add how-to-use of shadowsocks-manyuser 
+- Localization
+

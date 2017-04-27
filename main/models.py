@@ -3,6 +3,7 @@ from hashlib import md5
 from django.db import models
 from django.dispatch import receiver
 from django.core.mail import send_mail
+from django.template.loader import render_to_string
 from django.db.models.signals import post_save
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
@@ -72,15 +73,14 @@ class EmailVerification(models.Model):
 def email_verify(sender, instance, created=False, *args, **kwargs):
     if created:
         email_verification = EmailVerification.objects.create(user=instance)
+        message = render_to_string('main/email_verification_email.html', context={
+            'site_name': 'retoohs',
+            'username': instance.username,
+            'active_link': settings.EMAIL_VERIFICATION_URL.format(email_verification.code),
+        })
         send_mail(
             'Active your account',
-            """
-Hi {USERNAME},
-  Welcome to retoohs!
-  Please click this link {VERIFICATION_CODE} to active your account.
-            """.format(
-                USERNAME=instance.username,
-                VERIFICATION_CODE=settings.EMAIL_VERIFICATION_URL.format(email_verification.code)),
+            message,
             settings.EMAIL_SENDER,
             [instance.email],
         )

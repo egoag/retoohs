@@ -1,0 +1,9 @@
+{% load i18n %}{% autoescape off %}
+Hi {{ username }},
+
+{% trans "Please go to the following page to active your account:" %}
+{{ active_link }}
+
+{% trans "Thanks for using our site!" %}
+
+{% endautoescape %}
