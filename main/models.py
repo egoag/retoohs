@@ -88,3 +88,4 @@ def email_verify(sender, instance, created=False, *args, **kwargs):
 
 User._meta.get_field('username').max_length = 64
 User._meta.get_field('email')._unique = True
+User._meta.get_field('email').help_text = '激活账号，找回密码需要。'

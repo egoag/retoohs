@@ -33,7 +33,7 @@ class EmailVerifiedRequiredMixin(LoginRequiredMixin):
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated() or not request.user.email_verified:
-            messages.add_message(request, messages.WARNING, '邮箱未激活')
+            messages.add_message(request, messages.WARNING, '需要激活邮箱。')
             return self.handle_no_permission()
         return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
 
@@ -43,7 +43,10 @@ class SSLoginRequiredMixin(LoginRequiredMixin):
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated() or not getattr(request.user, 'ss_user', None):
-            messages.add_message(request, messages.WARNING, '需要激活Shadowsocks账号')
+            messages.add_message(
+                request,
+                messages.WARNING,
+                '需要使用<a href="{}">邀请码</a>激活Shadowsocks账号。'.format(reverse_lazy('ss:invite_code_list')))
             return self.handle_no_permission()
         return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
 
