@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.utils.http import is_safe_url
 from django.shortcuts import resolve_url
 from django.core.mail import send_mail
+from django.contrib import messages
 from django.views import generic
 from django.utils import timezone
 from django.conf import settings
@@ -28,6 +29,15 @@ class Register(generic.CreateView):
         if request.user.is_authenticated():
             return HttpResponseRedirect(reverse_lazy('ss:index'))
         return super(Register, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        _ = super(Register, self).form_valid(form)
+        messages.add_message(self.request,
+                             messages.WARNING,
+                             '一封激活邮件已发送到邮箱{}，'
+                             '请<a href="http://mail.{}">登录邮箱</a>激活账号。'.format(self.object.email,
+                                                                              self.object.email.split('@')[1]))
+        return HttpResponseRedirect(reverse_lazy('login'))
 
 
 def login(request):

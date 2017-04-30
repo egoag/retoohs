@@ -8,9 +8,6 @@
     <meta name="description" content="retoohs, 科学上网, shadowsocks">
     <link rel="SHORTCUT ICON" href="{% static 'img/favicon.ico' %}" type="image/x-icon"/>
     <link rel="ICON" href="{% static 'img/favicon.ico' %}" type="image/ico"/>
-    {#    <meta property="wb:webmaster" content="4cd0e157dc9fddaf" />#}
-    {#    <meta property="qc:admins" content="252131635477036375" />#}
-    {#    <meta property="qc:admins" content="252131635477036375" />#}
 
     <title>Retoohs</title>
 
@@ -54,6 +51,12 @@
         </ul>
         <h3 class="text-muted"><a href="/">retoohs</a></h3>
     </div>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} text-center" role="alert"
+                 style="padding: 5px; margin-bottom: 5px">{{ message |safe }}</div>
+        {% endfor %}
+    {% endif %}
     {% block body %}{% endblock %}
 </div>
 </body>
