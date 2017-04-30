@@ -84,6 +84,7 @@ INSTALLED_APPS = [
     'lbforum',
     'lbattachment',
     'lbutils',
+    'avatar',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -188,6 +189,10 @@ USE_L10N = True
 
 USE_TZ = True
 
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
@@ -246,3 +251,8 @@ HTML_SAFE_ATTRS = ['allowscriptaccess', 'allowfullscreen', 'wmode']
 # add forbid tags
 HTML_UNSAFE_TAGS = []
 HTML_UNSAFE_ATTRS = []
+
+# avatar
+AVATAR_ADD_TEMPLATE = 'main/avatar_add.html'
+AVATAR_CHANGE_TEMPLATE = 'main/avatar_change.html'
+AVATAR_DELETE_TEMPLATE = 'main/avatar_confirm_delete.html'

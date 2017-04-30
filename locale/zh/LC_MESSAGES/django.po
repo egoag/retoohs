@@ -1,0 +1,198 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-04-30 13:56+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: retoohs/settings.py:43
+msgid "SECRET_KEY"
+msgstr ""
+
+#: retoohs/settings.py:46
+msgid "DEBUG"
+msgstr ""
+
+#: retoohs/settings.py:52
+msgid "EMAIL_HOST"
+msgstr ""
+
+#: retoohs/settings.py:53
+msgid "EMAIL_HOST_PASSWORD"
+msgstr ""
+
+#: retoohs/settings.py:54
+msgid "EMAIL_HOST_USER"
+msgstr ""
+
+#: retoohs/settings.py:55
+msgid "EMAIL_PORT"
+msgstr ""
+
+#: retoohs/settings.py:56
+msgid "EMAIL_SUBJECT_PREFIX"
+msgstr ""
+
+#: retoohs/settings.py:57
+msgid "EMAIL_USE_TLS"
+msgstr ""
+
+#: retoohs/settings.py:58
+msgid "EMAIL_USE_SSL"
+msgstr ""
+
+#: retoohs/settings.py:59
+msgid "EMAIL_SENDER"
+msgstr ""
+
+#: retoohs/settings.py:63
+msgid "SITE_URL"
+msgstr ""
+
+#: retoohs/settings.py:126 retoohs/settings.py:133 retoohs/settings.py:143
+msgid "DB_TYPE"
+msgstr ""
+
+#: retoohs/settings.py:137 retoohs/settings.py:150
+msgid "DB_HOST"
+msgstr ""
+
+#: retoohs/settings.py:138 retoohs/settings.py:147
+msgid "DB_NAME"
+msgstr ""
+
+#: retoohs/settings.py:139 retoohs/settings.py:148
+msgid "DB_USER"
+msgstr ""
+
+#: retoohs/settings.py:140 retoohs/settings.py:149
+msgid "DB_PASS"
+msgstr ""
+
+#: retoohs/settings.py:151
+msgid "DB_PORT"
+msgstr ""
+
+#: retoohs/settings.py:200
+msgid "STATIC_ROOT"
+msgstr ""
+
+#: retoohs/settings.py:215
+msgid "ADMIN_URL"
+msgstr ""
+
+#: retoohs/settings.py:218
+msgid "LBFORUM_TITLE"
+msgstr ""
+
+#: retoohs/settings.py:219
+msgid "HOST_URL"
+msgstr ""
+
+#: templates/avatar/add.html:5 templates/avatar/change.html:5
+msgid "Your current avatar: "
+msgstr "当前头像: "
+
+#: templates/avatar/add.html:8 templates/avatar/change.html:8
+msgid "You haven't uploaded an avatar yet. Please upload one now."
+msgstr "你还没上传过头像，现在就上传一个."
+
+#: templates/avatar/add.html:12 templates/avatar/change.html:19
+msgid "Upload New Image"
+msgstr "上传"
+
+#: templates/avatar/change.html:14
+msgid "Choose new Default"
+msgstr "选择默认"
+
+#: templates/avatar/confirm_delete.html:5
+msgid "Please select the avatars that you would like to delete."
+msgstr "请选择要删除的头像"
+
+#: templates/avatar/confirm_delete.html:8
+#, python-format
+msgid ""
+"You have no avatars to delete. Please <a href=\"%(avatar_change_url)s"
+"\">upload one</a> now."
+msgstr "你还没上传过头像, 可以现在<a href=\"%(avatar_change_url)s"
+"\">上传</a>一个"
+
+#: templates/avatar/confirm_delete.html:14
+msgid "Delete These"
+msgstr "删除这些"
+
+#: templates/lbforum/index.html:32
+msgid "Post new topic"
+msgstr "发帖"
+
+#: templates/lbforum/index.html:38
+msgid "More"
+msgstr "更多"
+
+#: templates/main/email_verification_email.html:4
+msgid "Please go to the following page to active your account:"
+msgstr "请打开这个连接激活账号:"
+
+#: templates/main/email_verification_email.html:7
+msgid "Thanks for using our site!"
+msgstr "感谢使用我们的网址!"
+
+#: templates/main/password_change_done.html:4
+msgid "Your password was changed."
+msgstr "密码已更改."
+
+#: templates/main/password_change_form.html:13
+msgid ""
+"Please enter your old password, for security's sake, and then enter your new "
+"password twice so we can verify you typed it in correctly."
+msgstr ""
+
+#: templates/main/password_reset_complete.html:6
+msgid "Your password has been set.  You may go ahead and log in now."
+msgstr ""
+
+#: templates/main/password_reset_complete.html:8
+msgid "Log in"
+msgstr ""
+
+#: templates/main/password_reset_confirm.html:9
+msgid ""
+"Please enter your new password twice so we can verify you typed it in "
+"correctly."
+msgstr ""
+
+#: templates/main/password_reset_confirm.html:15
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a new password reset."
+msgstr ""
+
+#: templates/main/password_reset_done.html:6
+msgid ""
+"We've emailed you instructions for setting your password, if an account "
+"exists with the email you entered. You should receive them shortly."
+msgstr ""
+
+#: templates/main/password_reset_done.html:8
+msgid ""
+"If you don't receive an email, please make sure you've entered the address "
+"you registered with, and check your spam folder."
+msgstr ""
+
+#: templates/main/password_reset_form.html:8
+msgid ""
+"Forgotten your password? Enter your email address below, and we'll email "
+"instructions for setting a new one."
+msgstr ""
