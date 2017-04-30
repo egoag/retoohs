@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from django.views.generic import TemplateView
 from django.contrib.auth import views as auth_view
+from avatar import views as avatar_views
 from . import views
 from . import forms
 
@@ -46,4 +47,12 @@ urlpatterns = [
         auth_view.password_reset_complete,
         {'template_name': 'main/password_reset_complete.html'},
         name='password_reset_complete'),
+
+    # avatar
+    url(r'^avatar/add/$', avatar_views.add, {'upload_form': forms.UploadAvatarForm}, name='avatar_add'),
+    url(r'^avatar/change/$', avatar_views.change, {'upload_form': forms.UploadAvatarForm}, name='avatar_change'),
+    url(r'^avatar/delete/$', avatar_views.delete, name='avatar_delete'),
+    url(r'^avatar/render_primary/(?P<user>[\w\d\@\.\-_]+)/(?P<size>[\d]+)/$',
+        avatar_views.render_primary,
+        name='avatar_render_primary'),
 ]

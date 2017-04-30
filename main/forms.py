@@ -3,6 +3,7 @@ from django.contrib.auth import forms as auth_forms
 from django.contrib.auth import get_user_model, authenticate
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit, Button, Row, Field
+from avatar import forms as avatar_forms
 
 
 class CrispyFormMixin(object):
@@ -123,4 +124,12 @@ class PasswordResetForm(CrispyFormMixin, auth_forms.PasswordResetForm):
 
 
 class SetPasswordForm(CrispyFormMixin, auth_forms.SetPasswordForm):
+    pass
+
+
+class UploadAvatarForm(CrispyFormMixin, avatar_forms.UploadAvatarForm):
+    pass
+
+
+class DeleteAvatarForm(CrispyFormMixin, avatar_forms.DeleteAvatarForm):
     pass

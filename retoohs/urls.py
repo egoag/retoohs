@@ -21,6 +21,7 @@ from django.contrib import admin
 
 urlpatterns = [
     url('^$', TemplateView.as_view(template_name='index.html'), name='index'),
+    # url('^avatar/', include('avatar.urls')),
     url(r'^{}/'.format(getattr(settings, 'ADMIN_URL', 'admin')), admin.site.urls),
     url(r'^dashboard/forums/', include('lbforum.urls')),
     url(r'^dashboard/', include('ss.urls', namespace='ss')),
@@ -30,3 +31,4 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
